@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Curriculum Vitae</title>
+    <link rel="stylesheet" href="style.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.6/dist/docx-preview.min.js" defer></script>
+    <style>
+        body {
+            height: auto;
+            min-height: 100vh;
+            padding: 24px 0;
+        }
+
+        .cv-window {
+            width: min(1000px, 100%);
+            min-height: 0;
+        }
+
+        .cv-toolbar {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #edf5ff;
+            border-bottom: 1px solid rgba(70, 111, 165, 0.4);
+        }
+
+        .cv-toolbar a {
+            color: #174f7b;
+            font-weight: 700;
+        }
+
+        .cv-status {
+            margin: 0;
+            color: #345575;
+            font-size: 14px;
+        }
+
+        .document-viewport {
+            max-height: calc(100vh - 170px);
+            min-height: 400px;
+            overflow: auto;
+            padding: 24px;
+            background: #d7e2ec;
+        }
+
+        #document {
+            width: fit-content;
+            min-width: min(100%, 680px);
+            margin: 0 auto;
+        }
+
+        #document .docx-wrapper {
+            padding: 0;
+            background: transparent;
+        }
+
+        #document .docx {
+            max-width: 100%;
+            margin: 0 auto 20px;
+            box-shadow: 0 2px 10px rgba(16, 35, 64, 0.22);
+        }
+
+        @media (max-width: 600px) {
+            .page-shell { padding: 0 10px; }
+            .cv-window { width: 100%; }
+            .document-viewport { min-height: 65vh; padding: 12px 6px; }
+            #document { min-width: 0; }
+            .cv-toolbar { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <main class="window cv-window">
+            <header class="titlebar">
+                <div class="title-group">
+                    <span class="title-icon" aria-hidden="true">CV</span>
+                    <span class="title-text">Curriculum Vitae</span>
+                </div>
+                <a href="index.html">Back to portfolio</a>
+            </header>
+            <div class="cv-toolbar">
+                <p class="cv-status" id="cv-status" role="status">Loading document...</p>
+                <a href="Europass%20Curriculum%20Vitae%20(1).docx" download>Download DOCX</a>
+            </div>
+            <section class="document-viewport" aria-label="Curriculum vitae document">
+                <div id="document"></div>
+            </section>
+        </main>
+    </div>
+    <script>
+        window.addEventListener("DOMContentLoaded", async () => {
+            const status = document.getElementById("cv-status");
+            const documentContainer = document.getElementById("document");
+
+            try {
+                if (!window.docx || !window.docx.renderAsync) {
+                    throw new Error("The document viewer could not be loaded.");
+                }
+
+                const response = await fetch("Europass%20Curriculum%20Vitae%20(1).docx");
+                if (!response.ok) {
+                    throw new Error("The CV document could not be found.");
+                }
+
+                await window.docx.renderAsync(await response.arrayBuffer(), documentContainer);
+                status.textContent = "Document loaded";
+            } catch (error) {
+                status.textContent = `${error.message} Use Download DOCX to open it in Word.`;
+            }
+        });
+    </script>
+</body>
+</html>
